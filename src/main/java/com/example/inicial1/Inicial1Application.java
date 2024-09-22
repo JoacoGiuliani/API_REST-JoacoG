@@ -1,0 +1,104 @@
+package com.example.inicial1;
+
+import com.example.inicial1.entities.*;
+import com.example.inicial1.repositories.PersonaRepository;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+@SpringBootApplication
+public class Inicial1Application {
+	private static final Logger logger = LoggerFactory.getLogger(Inicial1Application.class);
+
+	@Autowired
+	private PersonaRepository personaRepository;
+	public static void main(String[] args) {
+		SpringApplication.run(Inicial1Application.class, args);
+
+		System.out.println("funcionando");
+	}
+
+	@Bean
+	@Transactional
+	CommandLineRunner init(PersonaRepository personaRepository) {
+		return args -> {
+	// Creo un objeto persona
+Persona per1 = Persona.builder().
+		nombre("Joaquin").apellido("Giuliani").dni(45532172).
+		build();
+Domicilio dom1 = Domicilio.builder().
+		calle("Las Cañas").
+		numero(1950).build();
+
+		per1.setDomicilio(dom1);
+
+Persona per2 = Persona.builder().
+		nombre("Felipe").apellido("Atencio").dni(45535678).
+		build();
+Domicilio dom2 = Domicilio.builder().
+		calle("Elpidio").
+		numero(6755).build();
+
+		per2.setDomicilio(dom2);
+
+
+Localidad loc1 = Localidad.builder().denominacion("Guaymallén").build();
+Localidad loc2 =Localidad.builder().denominacion("Godoy Cruz").build();
+		dom1.getLocalidades().add(loc1)	;
+		dom2.getLocalidades().add(loc2)	;
+
+
+
+
+Libro lib1 = Libro.builder()
+		.titulo("Cien años de soledad")
+		.fecha(1967)
+		.genero("Realismo mágico")
+		.paginas(417)
+		.autor("Garcia Marquez")
+		.build();
+Libro lib2 = Libro.builder()
+		.titulo("El Aleph")
+		.fecha(1949)
+		.genero("Ficción")
+		.paginas(146)
+		.autor("Luis Borges")
+		.build();
+
+			per1.getLibros().add(lib1);
+			per1.getLibros().add(lib2);
+
+
+		Autor aut1 = Autor.builder()
+				.nombre("Gabriel")
+				.apellido("García Márquez")
+				.biografia("Autor colombiano, conocido por obras como Cien años de soledad.")
+				.build();
+		Autor aut2 =Autor.builder()
+				.nombre("Jorge")
+				.apellido("Luis Borges")
+				.biografia("Escritor argentino, reconocido por sus cuentos y ensayos.")
+				.build();
+
+
+			lib1.getAutores().add(aut1);
+			lib2.getAutores().add(aut2);
+
+		personaRepository.save(per1);
+		personaRepository.save(per2);
+
+
+		};
+
+		};
+
+}
